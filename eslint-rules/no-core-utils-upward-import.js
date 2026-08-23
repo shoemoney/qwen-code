@@ -6,9 +6,11 @@
 
 /**
  * @fileoverview Disallows runtime (value) imports from `packages/core/src/utils/`
- * production modules into modules outside the utils/ directory. Type-only
- * imports are permitted because they are erased at compile time and therefore
- * introduce no runtime upward dependency.
+ * production modules into modules outside the utils/ directory. The only
+ * permitted upward references are declaration-level type-only constructs that
+ * are erased at compile time. Inline type specifiers are reported because this
+ * repository's `verbatimModuleSyntax` preserves their declarations as runtime
+ * edges.
  *
  * The goal is a leaf utils/ layer: every runtime dependency of a utils module
  * must be a sibling utils module (or an external/npm package). A small
@@ -107,7 +109,7 @@ export default {
     schema: [],
     messages: {
       noCoreUtilsUpwardImport:
-        "Core utils module '{{file}}' imports runtime value '{{importedPath}}' from outside utils/. Move the value into utils/ (or re-export it from its owner module) so utils/ stays a leaf layer. Type-only imports are allowed.",
+        "Core utils module '{{file}}' imports '{{importedPath}}' from outside utils/ in a form that preserves a runtime edge. Move the value into utils/ (or re-export it from its owner module) so utils/ stays a leaf layer. Declaration-level type-only imports are allowed; inline type specifiers are not.",
     },
   },
 
